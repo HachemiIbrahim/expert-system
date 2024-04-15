@@ -40,6 +40,40 @@ agenda = Agenda()
 
 
 def diagnose(symptoms: schema.UserSymptoms):
+    # kb = FolKB()
+
+    # for rule in rules.values():
+    #     kb.tell(expr(rule))
+
+    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
+    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
+    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
+
+    # problems = [
+    #     "CPU Problem",
+    #     "RAM Problem",
+    #     "GPU Problem",
+    #     "Power Supply Problem",
+    #     "Motherboard Problem",
+    #     "Hard Drive Problem",
+    #     "Network Card Problem",
+    #     "Sound Card Problem",
+    #     "Video Card Problem",
+    #     "BIOS Issue",
+    #     "Operating System Problem",
+    #     "Power Cord Problem",
+    #     "Keyboard Problem",
+    #     "Mouse Problem",
+    #     "Monitor Problem",
+    # ]
+    # diagnosis = None
+    # for problem in problems:
+    #     if kb.ask(expr(f'Problem(x, "{problem}")')):
+    #         diagnosis = problem
+    #         break
+
+    # return {"diagnosis": diagnosis}
+
     kb = FolKB()
 
     for rule in rules.values():
@@ -66,8 +100,13 @@ def diagnose(symptoms: schema.UserSymptoms):
         "Mouse Problem",
         "Monitor Problem",
     ]
-    diagnosis = None
     for problem in problems:
+        agenda.add_task(problem)
+
+    diagnosis = None
+    # Process each problem in the agenda
+    while not agenda.is_empty():
+        problem = agenda.get_task()
         if kb.ask(expr(f'Problem(x, "{problem}")')):
             diagnosis = problem
             break
