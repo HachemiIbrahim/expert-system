@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import relationship
 
 from .database import Base
 
@@ -8,19 +9,17 @@ class Symptom(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String)
+    problem_id = Column(Integer, ForeignKey("problems.id"))
 
-
-class Solution(Base):
-    __tablename__ = "solutions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    description = Column(String)
-    steps = Column(String)
+    problem = relationship("Problem", back_populates="symptoms")
 
 
 class Problem(Base):
     __tablename__ = "problems"
 
     id = Column(Integer, primary_key=True, index=True)
-    symptom_id = Column(Integer)
-    solution_id = Column(Integer)
+    title = Column(String)
+    description = Column(String)
+    solution = Column(Text)
+
+    symptoms = relationship("Symptom", back_populates="problem")
