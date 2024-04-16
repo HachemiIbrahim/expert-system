@@ -7,7 +7,7 @@ rules = {
     "rule2": 'Symptom(x, "Blue screen") & Symptom(x, "Poor performance") & Symptom(x, "A lot of crashing") ==> Problem(x, "RAM Problem")',
     "rule3": 'Symptom(x, "Poor performance in games") & Symptom(x, "Visual artifacts") & Symptom(x, "System freezes") ==> Problem(x, "GPU Problem")',
     "rule4": 'Symptom(x, "Unexpected shutdowns") & Symptom(x, "Difficulty starting") & Symptom(x, "Burning plastic smell") ==> Problem(x, "Power Supply Problem")',
-    "rule5": 'Symptom(x, "No post") & Symptom(x, "Boots to different error messages") & Symptom(x, "No power to USB devices") ==> Problem(x, "Motherboard Problem")',
+    "rule5": '(Symptom(x, "No post") & Symptom(x, "Boots to different error messages") & Symptom(x, "No power to USB devices")) ==> Problem(x, "Motherboard Problem")',
     "rule6": 'Symptom(x, "Slow boot time") & Symptom(x, "Frequent freezing") & Symptom(x, "Blue screen") ==> Problem(x, "Hard Drive Problem")',
     "rule7": 'Symptom(x, "No internet connection") & Symptom(x, "Slow internet speed") & Symptom(x, "Frequent disconnection") ==> Problem(x, "Network Card Problem")',
     "rule8": 'Symptom(x, "No sound") & Symptom(x, "Distorted sound") & Symptom(x, "Frequent audio cut-out") ==> Problem(x, "Sound Card Problem")',
@@ -21,7 +21,6 @@ rules = {
 }
 
 
-# Define the Agenda class
 class Agenda:
     def __init__(self):
         self.agenda = []
@@ -40,39 +39,6 @@ agenda = Agenda()
 
 
 def diagnose(symptoms: schema.UserSymptoms):
-    # kb = FolKB()
-
-    # for rule in rules.values():
-    #     kb.tell(expr(rule))
-
-    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
-    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
-    # kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
-
-    # problems = [
-    #     "CPU Problem",
-    #     "RAM Problem",
-    #     "GPU Problem",
-    #     "Power Supply Problem",
-    #     "Motherboard Problem",
-    #     "Hard Drive Problem",
-    #     "Network Card Problem",
-    #     "Sound Card Problem",
-    #     "Video Card Problem",
-    #     "BIOS Issue",
-    #     "Operating System Problem",
-    #     "Power Cord Problem",
-    #     "Keyboard Problem",
-    #     "Mouse Problem",
-    #     "Monitor Problem",
-    # ]
-    # diagnosis = None
-    # for problem in problems:
-    #     if kb.ask(expr(f'Problem(x, "{problem}")')):
-    #         diagnosis = problem
-    #         break
-
-    # return {"diagnosis": diagnosis}
 
     kb = FolKB()
 
@@ -111,4 +77,4 @@ def diagnose(symptoms: schema.UserSymptoms):
             diagnosis = problem
             break
 
-    return {"diagnosis": diagnosis}
+    return diagnosis

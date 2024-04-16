@@ -2,7 +2,7 @@ from typing import List
 
 from db import models
 from db.database import get_db
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from . import schema, utils
@@ -67,6 +67,9 @@ def get_all_symptoms(db: Session = Depends(get_db)):
     return symptoms
 
 
-@router.post("/diagnose")
-def diagnose_route(symptoms: schema.UserSymptoms):
-    return utils.diagnose(symptoms)
+@router.post("/diagnose", response_model=schema.ProblemDisplay)
+def diagnose_route(symptoms: schema.UserSymptoms, db: Session = Depends(get_db)):
+    diagnose = utils.diagnose(symptoms)
+    if diagnose is None:
+        raise HTTPException(status_code=404, detail="Diagnosis not found")
+    return db.query(models.Problem).filter(models.Problem.title == diagnose).first()
