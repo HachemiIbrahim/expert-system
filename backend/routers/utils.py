@@ -1,4 +1,4 @@
-from aima3.logic import FolKB, expr
+from aima3.logic import FolKB, expr, fol_bc_ask
 from routers import schema
 
 rules = {
@@ -29,7 +29,7 @@ class Agenda:
         self.agenda.append(task)
 
     def get_task(self):
-        return self.agenda.pop()  # LIFO
+        return self.agenda.pop()
 
     def is_empty(self):
         return len(self.agenda) == 0
@@ -70,11 +70,60 @@ def diagnose(symptoms: schema.UserSymptoms):
         agenda.add_task(problem)
 
     diagnosis = None
-    # Process each problem in the agenda
+
     while not agenda.is_empty():
         problem = agenda.get_task()
-        if kb.ask(expr(f'Problem(x, "{problem}")')):
+        solutions = fol_bc_ask(kb, expr(f'Problem(x, "{problem}")'))
+        first_solution = next(solutions, None)
+        if first_solution is not None:
             diagnosis = problem
             break
 
     return diagnosis
+
+
+# def diagnose(symptoms: schema.UserSymptoms):
+
+#     kb = FolKB()
+
+#     for rule in rules.values():
+#         kb.tell(expr(rule))
+
+#     kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
+#     kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
+#     kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
+
+#     problems = [
+#         "CPU Problem",
+#         "RAM Problem",
+#         "GPU Problem",
+#         "Power Supply Problem",
+#         "Motherboard Problem",
+#         "Hard Drive Problem",
+#         "Network Card Problem",
+#         "Sound Card Problem",
+#         "Video Card Problem",
+#         "BIOS Issue",
+#         "Operating System Problem",
+#         "Power Cord Problem",
+#         "Keyboard Problem",
+#         "Mouse Problem",
+#         "Monitor Problem",
+#     ]
+#     for problem in problems:
+#         agenda.add_task(problem)
+
+#     diagnosis = None
+#     # Process each problem in the agenda
+#     while not agenda.is_empty():
+#         problem = agenda.get_task()
+#         solutions = fol_bc_ask(kb, expr(f'Problem(x, "{problem}")'))
+#         if solutions is not None:
+#             break
+#         diagnosis = solutions
+#         # first_solution = next(solutions, None)
+#         # if first_solution is not None:
+#         #     diagnosis = problem
+#         #     break
+
+#     return diagnosis
