@@ -71,5 +71,5 @@ def get_all_symptoms(db: Session = Depends(get_db)):
 def diagnose_route(symptoms: schema.UserSymptoms, db: Session = Depends(get_db)):
     diagnose = utils.diagnose(symptoms)
     if diagnose is None:
-        raise HTTPException(status_code=404, detail="Diagnosis not found")
+        raise HTTPException(status_code=404, detail="Problem not found")
     return db.query(models.Problem).filter(models.Problem.title == diagnose).first()

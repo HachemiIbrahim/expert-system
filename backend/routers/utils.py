@@ -37,19 +37,19 @@ class Agenda:
 
 class WorkingMemory:
     def __init__(self):
-        self.memory = []
+        self.memory = {}  # Change memory to a dictionary
 
-    def add_fact(self, fact):
-        self.memory.append(fact)
+    def add_fact(self, fact, exists):
+        self.memory[fact] = exists  # Add a fact and its existence status to the memory
 
-    def get_fact(self):
-        return self.memory.pop()
+    def get_fact(self, fact):
+        return self.memory.get(fact, None)  # Get the existence status of a fact
 
     def is_empty(self):
-        return len(self.memory) == 0
+        return len(self.memory) == 0  # Check if the memory is empty
 
     def contains_fact(self, fact):
-        return fact in self.memory
+        return fact in self.memory  # Check if a specific fact is in the memory
 
 
 agenda = Agenda()
@@ -63,18 +63,10 @@ def diagnose(symptoms: schema.UserSymptoms):
     for rule in rules.values():
         kb.tell(expr(rule))
 
-    working_memory.add_fact(symptoms.symptom1)
-    working_memory.add_fact(symptoms.symptom2)
-    working_memory.add_fact(symptoms.symptom3)
-
-    if working_memory.contains_fact(symptoms.symptom1):
-        kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
-
-    if working_memory.contains_fact(symptoms.symptom2):
-        kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
-
-    if working_memory.contains_fact(symptoms.symptom3):
-        kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
+    for symptom in [symptoms.symptom1, symptoms.symptom2, symptoms.symptom3]:
+        exists = bool(fol_bc_ask(kb, expr(f'Symptom(x, "{symptom}")')))
+        kb.tell(expr(f'Symptom(x, "{symptom}")'))
+        working_memory.add_fact(symptom, exists)
 
     problems = [
         "CPU Problem",
