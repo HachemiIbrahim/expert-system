@@ -35,19 +35,46 @@ class Agenda:
         return len(self.agenda) == 0
 
 
+class WorkingMemory:
+    def __init__(self):
+        self.memory = []
+
+    def add_fact(self, fact):
+        self.memory.append(fact)
+
+    def get_fact(self):
+        return self.memory.pop()
+
+    def is_empty(self):
+        return len(self.memory) == 0
+
+    def contains_fact(self, fact):
+        return fact in self.memory
+
+
 agenda = Agenda()
 
 
 def diagnose(symptoms: schema.UserSymptoms):
 
     kb = FolKB()
+    working_memory = WorkingMemory()
 
     for rule in rules.values():
         kb.tell(expr(rule))
 
-    kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
-    kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
-    kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
+    working_memory.add_fact(symptoms.symptom1)
+    working_memory.add_fact(symptoms.symptom2)
+    working_memory.add_fact(symptoms.symptom3)
+
+    if working_memory.contains_fact(symptoms.symptom1):
+        kb.tell(expr(f'Symptom(x, "{symptoms.symptom1}")'))
+
+    if working_memory.contains_fact(symptoms.symptom2):
+        kb.tell(expr(f'Symptom(x, "{symptoms.symptom2}")'))
+
+    if working_memory.contains_fact(symptoms.symptom3):
+        kb.tell(expr(f'Symptom(x, "{symptoms.symptom3}")'))
 
     problems = [
         "CPU Problem",
